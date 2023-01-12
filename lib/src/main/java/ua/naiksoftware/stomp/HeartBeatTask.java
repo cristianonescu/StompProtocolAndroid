@@ -56,6 +56,7 @@ public class HeartBeatTask {
     public boolean consumeHeartBeat(StompMessage message) {
         switch (message.getStompCommand()) {
             case StompCommand.CONNECTED:
+                Log.d("HeartBeat/Message", message.toString());
                 heartBeatHandshake(message.findHeader(StompHeader.HEART_BEAT));
                 break;
 
