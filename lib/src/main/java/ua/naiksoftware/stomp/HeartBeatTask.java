@@ -65,6 +65,7 @@ public class HeartBeatTask {
 
             case StompCommand.MESSAGE:
                 //a MESSAGE works as an hear-beat too.
+                Log.d("HeartBeat/Message", message.getPayload());
                 abortServerHeartBeatCheck();
                 break;
 
