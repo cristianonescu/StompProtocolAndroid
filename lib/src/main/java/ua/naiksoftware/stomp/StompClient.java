@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -170,6 +171,13 @@ public class StompClient {
         return send(new StompMessage(
                 StompCommand.SEND,
                 Collections.singletonList(new StompHeader(StompHeader.DESTINATION, destination)),
+                data));
+    }
+
+    public Completable send(String destination, String data, StompHeader accessToken) {
+        return send(new StompMessage(
+                StompCommand.SEND,
+                Collections.unmodifiableList(Arrays.asList(new StompHeader(StompHeader.DESTINATION, destination), accessToken)),
                 data));
     }
 
