@@ -217,37 +217,28 @@ public class StompClient {
 
     @SuppressLint("CheckResult")
     public void disconnect() {
-        disconnectCompletable()
-            .subscribe(
-                () -> Log.d(TAG, "Disconnected successfully"),
-                throwable -> Log.e(TAG, "Disconnect error", throwable)
-            );
+        disconnectCompletable().subscribe(() -> {
+        }, e -> Log.e(TAG, "Disconnect error", e));
     }
 
     public Completable disconnectCompletable() {
+
         heartBeatTask.shutdown();
-    
+
         if (lifecycleDisposable != null) {
             lifecycleDisposable.dispose();
         }
         if (messagesDisposable != null) {
             messagesDisposable.dispose();
         }
-    
-        // Safely handle disconnection
-        return Completable.defer(() -> {
-            if (!connectionProvider.isConnected()) {
-                return Completable.error(new IllegalStateException("Not connected"));
-            }
-    
-            return connectionProvider.disconnect()
+
+        return connectionProvider.disconnect()
                 .doFinally(() -> {
                     Log.d(TAG, "Stomp disconnected");
                     getConnectionStream().onComplete();
                     getMessageStream().onComplete();
                     lifecyclePublishSubject.onNext(new LifecycleEvent(LifecycleEvent.Type.CLOSED));
                 });
-        });
     }
 
     public Flowable<StompMessage> topic(String destinationPath) {
